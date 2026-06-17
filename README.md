@@ -63,6 +63,34 @@ Well, `latin-1` on the right side is not required. The default is `utf-8`.
 You can save it as `hello.py` and just run it with `python3 hello.py`.
 And your first *hello world* page with Tremolo will be at http://localhost:8000/hello.
 
+## CORS
+Cross-Origin Resource Sharing can be enabled with the built-in `CORSMiddleware`.
+It handles both the `OPTIONS` preflight and the actual request:
+
+```python
+from tremolo import Application
+from tremolo.middlewares import CORSMiddleware
+
+app = Application()
+
+CORSMiddleware(app,
+               allow_origins=['https://example.com'],
+               allow_methods=['GET', 'POST'],
+               allow_headers=['content-type'],
+               allow_credentials=True,
+               max_age=600)
+
+@app.route('/hello')
+async def hello_world(**server):
+    return 'Hello World!'
+
+
+if __name__ == '__main__':
+    app.run('0.0.0.0', 8000, debug=True)
+```
+
+See [examples/cors.py](https://github.com/nggit/tremolo/blob/main/examples/cors.py).
+
 ## ASGI Server
 Tremolo is an HTTP Server framework. You can build abstractions on top of it, say an ASGI server.
 
